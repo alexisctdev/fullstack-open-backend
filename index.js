@@ -32,6 +32,7 @@ app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`)
 })
 
+app.use(express.static('dist'))
 app.use(cors())
 app.use(express.json())
 app.use(
@@ -39,10 +40,6 @@ app.use(
 )
 
 morgan.token('body', (req) => req.method === 'POST' && JSON.stringify(req.body))
-
-app.get(('*', (req, res, next) => {
-  res.status(404).json({error: '404'})
-}))
 
 app.get('/api/persons', (req, res) => {
   res.json(persons)
@@ -114,4 +111,8 @@ app.post('/api/persons', (req, res) => {
 
   persons = persons.concat(newPerson)
   res.json(newPerson)
+})
+
+app.use((req, res) => {
+  res.status(404).json({ error: '404' })
 })
